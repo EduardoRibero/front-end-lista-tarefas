@@ -20,12 +20,12 @@ function App() {
   return (
     <div className='text-center pt-5'>
       <Container>
-        <Row className='justify-content-center'><h1>Lista de tarefas</h1></Row>
+        <Row className='justify-content-center'><h1>Tarefas</h1></Row>
         <Row>
           <Col className='d-flex flex-column m-5'>
               <h4 className='mb-3'>Adicione uma nova tarefa:</h4>
               <input className='mb-3 form-control' type="text" placeholder='Digite aqui sua tarefa' />
-              <button className='btn btn-success mb-3 w-25'>Adicionar</button>
+              <button className='btn btn-success mb-3 w-25'>Nova Tarefa</button>
           </Col>
         </Row>
 
@@ -33,7 +33,7 @@ function App() {
           <Col>
             <ul className='list-unstyled m-5'>
               {tarefas.map((tarefa) =>(
-                <li className=' mb-3' key={tarefa.id}>{tarefa.tarefa } <button className='btn btn-danger'>Deletar</button> <button className='btn btn-warning'>Alterar</button></li>
+                <li className=' mb-3' key={tarefa.id}><label className='m-3'> {tarefa.tarefa } </label> <button className='btn btn-danger'>Excluir</button> <button className='btn btn-warning'>Editar</button></li>
               ))}
             </ul>
           </Col>
