@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 function App() {
 
@@ -13,7 +13,8 @@ function App() {
 
   const [inputNovaTarefa, setInputNovaTarefa] = useState("")
 
-  const  submitNovaTarefa = (e) =>{
+  const  submitNovaTarefa = useCallback(
+    (e) =>{
       e.preventDefault()
       let body = {
         tarefa: `${inputNovaTarefa}`
@@ -29,26 +30,43 @@ function App() {
       fetch(url, obj)
       setInputNovaTarefa("")
 
+  },[inputNovaTarefa])
+
+  const submitDelet = useCallback((e,id)=>{
+      let novaUrl = url + "/" + id
+      let obj = {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+
+      fetch(novaUrl, obj)
+      .then(() => listarTarefas())
+      .catch((err) => console.log(err))
+
+  },[url])
+
+  const listarTarefas = async () => {
+    await fetch(url)
+          .then((res) => res.json())
+          .then((data) => setTarefas([...data]))
   }
 
   useEffect(()=>{
-    async function listarTarefas() {
-      await fetch(url).then((res) => res.json())
-                      .then((data) => setTarefas([...data]))
-    }
     listarTarefas()
   },[submitNovaTarefa, inputNovaTarefa])
 
   return (
-    <div className='text-center pt-5'>
+    <div className='pt-5'>
       <Container>
-        <Row className='justify-content-center'><h1>Tarefas</h1></Row>
+        <Row className='text-center'><h1>Tarefas</h1></Row>
         <Row>
           <Col className='d-flex flex-column m-5'>
-              <form onSubmit={submitNovaTarefa}> 
+              <form className='d-flex flex-column' onSubmit={submitNovaTarefa}> 
                 <label>
                   Adicione uma nova tarefa:
-                  <input className='mb-3 form-control' type="text" value={inputNovaTarefa} placeholder='Digite aqui sua tarefa' onChange={(e) => setInputNovaTarefa(e.target.value)} />
+                  <input className='mb-3 mt-3 form-control' type="text" value={inputNovaTarefa} placeholder='Digite aqui sua tarefa' onChange={(e) => setInputNovaTarefa(e.target.value)} />
                 </label>
                 <input type='submit' className='btn btn-success mb-3 w-25' value="Nova Tarefa"/>
               </form>
@@ -67,7 +85,7 @@ function App() {
                       console.log(e.target.value)}}/> 
                     <button className='btn btn-warning'>Editar</button>
                     </div>
-                  <button className='btn btn-danger'>Excluir</button>
+                  <button className='btn btn-danger' onClick={(e) => submitDelet(e,tarefa.id)}>Excluir</button>
                 </li>
               ))}
             </ul>
