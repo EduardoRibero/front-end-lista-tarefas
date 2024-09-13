@@ -8,11 +8,11 @@ function App() {
 
   const url = 'http://localhost:8080/tarefas'
   const [tarefas, setTarefas] = useState([])
-
-  const [inputTarefa, setInputTarefa] = useState("")
-
+  const [inputTarefa, setInputTarefa] = useState({})
   const [inputNovaTarefa, setInputNovaTarefa] = useState("")
 
+
+  //Get tarefas
   const  submitNovaTarefa = useCallback(
     (e) =>{
       e.preventDefault()
@@ -32,6 +32,8 @@ function App() {
 
   },[inputNovaTarefa])
 
+
+  //Delete
   const submitDelet = useCallback((e,id)=>{
       let novaUrl = url + "/" + id
       let obj = {
@@ -47,11 +49,41 @@ function App() {
 
   },[url])
 
+
+  //Controle o input de edição
+  const alterEditInput = useCallback((e, id)=>{
+      setInputTarefa({...inputTarefa, [id]: e.target.value})
+    },[inputTarefa])
+  
+
+  //Edição
+  const submitEditar = useCallback((e, id)=>{
+    alterEditInput(e, id)
+    let novaUrl = url + "/" + id
+    let body = {
+      tarefa: inputTarefa[id]
+    }
+    let obj = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      }
+
+      fetch(novaUrl, obj)
+      .then(() => listarTarefas())
+      .catch((err) => console.log(err))
+  },[inputTarefa, alterEditInput])
+
+
+  //Listagem de tarefas
   const listarTarefas = async () => {
     await fetch(url)
           .then((res) => res.json())
           .then((data) => setTarefas([...data]))
   }
+
 
   useEffect(()=>{
     listarTarefas()
@@ -80,10 +112,8 @@ function App() {
                 <li className='d-flex justify-content-around  mb-3' key={tarefa.id}>
                   <label> {tarefa.tarefa } </label>
                   <div className="d-flex justify-content-around">
-                    <input className='form-control w-100' type="text" value={inputTarefa} placeholder='Editar' onChange={(e) => {
-                      setInputTarefa(e.target.value)
-                      console.log(e.target.value)}}/> 
-                    <button className='btn btn-warning'>Editar</button>
+                    <input className='form-control w-100' type="text" placeholder='Editar' value={inputTarefa[tarefa.id] || ""} onChange={(e) => alterEditInput(e, tarefa.id)}/> 
+                    <button className='btn btn-warning' onClick={(e)=>submitEditar(e, tarefa.id)}>Editar</button>
                     </div>
                   <button className='btn btn-danger' onClick={(e) => submitDelet(e,tarefa.id)}>Excluir</button>
                 </li>
