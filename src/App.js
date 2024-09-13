@@ -2,32 +2,23 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { useState } from 'react';
-import "./App.css"
+import { useState, useEffect } from 'react';
 
 function App() {
 
-  const [tarefas, setTarefas] = useState([
-    {
-      id: 1,
-      tarefa : "Qualquer tarefa exemplo"
-    },
-    {
-      id: 34,
-      tarefa : "Qualquer  exemplo"
-    },
-    {
-      id: 4354,
-      tarefa : "Qualquer tarefa "
-    },
-    {
-      id: 4354,
-      tarefa : " tarefa exemplo"
+  const url = 'http://localhost:8080/tarefas'
+  const [tarefas, setTarefas] = useState([])
+
+  useEffect(()=>{
+    async function listarTarefas() {
+      await fetch(url).then((res) => res.json())
+                      .then((data) => setTarefas([...data]))
     }
-  ])
+    listarTarefas()
+  },[])
 
   return (
-    <div className='bg-dark-subtle text-center pt-5'>
+    <div className='text-center pt-5'>
       <Container>
         <Row className='justify-content-center'><h1>Lista de tarefas</h1></Row>
         <Row>
@@ -40,7 +31,7 @@ function App() {
 
         <Row>
           <Col>
-            <ul className='m-5'>
+            <ul className='list-unstyled m-5'>
               {tarefas.map((tarefa) =>(
                 <li className=' mb-3' key={tarefa.id}>{tarefa.tarefa } <button className='btn btn-danger'>Deletar</button> <button className='btn btn-warning'>Alterar</button></li>
               ))}
