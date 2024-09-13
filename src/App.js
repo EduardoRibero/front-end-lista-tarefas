@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 function App() {
 
-  const url = 'http://192.168.0.166:8080/tarefas'
+  const url = 'https://back-end-lista-tarefas.vercel.app/tarefas'
   const [tarefas, setTarefas] = useState([])
   const [inputTarefa, setInputTarefa] = useState({})
   const [inputNovaTarefa, setInputNovaTarefa] = useState("")
