@@ -27,14 +27,14 @@ function App() {
   ])
 
   return (
-    <div className='text-center'>
+    <div className='bg-dark-subtle text-center pt-5'>
       <Container>
-        <Row><h1 className='m-3'>Lista de tarefas</h1></Row>
+        <Row className='justify-content-center'><h1>Lista de tarefas</h1></Row>
         <Row>
           <Col className='d-flex flex-column m-5'>
-              <label className='mb-3'>Adicione uma nova tarefa:</label>
-              <input className='mb-3' type="text" placeholder='Digite aqui sua tarefa' />
-              <button className='mb-3 w-25'>Adicionar</button>
+              <h4 className='mb-3'>Adicione uma nova tarefa:</h4>
+              <input className='mb-3 form-control' type="text" placeholder='Digite aqui sua tarefa' />
+              <button className='btn btn-success mb-3 w-25'>Adicionar</button>
           </Col>
         </Row>
 
@@ -42,7 +42,7 @@ function App() {
           <Col>
             <ul className='m-5'>
               {tarefas.map((tarefa) =>(
-                <li className='border mb-3' key={tarefa.id}>{tarefa.tarefa} <button>Deletar</button> <button>Alterar</button></li>
+                <li className=' mb-3' key={tarefa.id}>{tarefa.tarefa } <button className='btn btn-danger'>Deletar</button> <button className='btn btn-warning'>Alterar</button></li>
               ))}
             </ul>
           </Col>
