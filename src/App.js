@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 function App() {
 
-  const url = 'http://localhost:8080/tarefas'
+  const url = 'http://192.168.0.166:8080/tarefas'
   const [tarefas, setTarefas] = useState([])
   const [inputTarefa, setInputTarefa] = useState({})
   const [inputNovaTarefa, setInputNovaTarefa] = useState("")
@@ -27,7 +27,7 @@ function App() {
           body: JSON.stringify(body)
         }
 
-      fetch(url, obj)
+      fetch(url, obj).then(()=> listarTarefas())
       setInputNovaTarefa("")
 
   },[inputNovaTarefa])
@@ -58,22 +58,24 @@ function App() {
 
   //Edição
   const submitEditar = useCallback((e, id)=>{
-    alterEditInput(e, id)
-    let novaUrl = url + "/" + id
-    let body = {
-      tarefa: inputTarefa[id]
-    }
-    let obj = {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body)
+    if(inputTarefa[id]!== "" & inputTarefa[id] !== null ){
+      alterEditInput(e, id)
+      let novaUrl = url + "/" + id
+      let body = {
+        tarefa: inputTarefa[id]
       }
-
-      fetch(novaUrl, obj)
-      .then(() => listarTarefas())
-      .catch((err) => console.log(err))
+      let obj = {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body)
+        }
+  
+        fetch(novaUrl, obj)
+        .then(() => listarTarefas())
+        .catch((err) => console.log(err))
+    }
   },[inputTarefa, alterEditInput])
 
 
@@ -100,7 +102,7 @@ function App() {
                   Adicione uma nova tarefa:
                   <input className='mb-3 mt-3 form-control' type="text" value={inputNovaTarefa} placeholder='Digite aqui sua tarefa' onChange={(e) => setInputNovaTarefa(e.target.value)} />
                 </label>
-                <input type='submit' className='btn btn-success mb-3 w-25' value="Nova Tarefa"/>
+                <input type='submit' className='btn btn-success mb-3' value="Nova Tarefa"/>
               </form>
           </Col>
         </Row>
@@ -109,10 +111,10 @@ function App() {
           <Col>
             <ul className='list-unstyled m-5'>
               {tarefas.map((tarefa) =>(
-                <li className='d-flex justify-content-around  mb-3' key={tarefa.id}>
+                <li className='d-flex flex-column justify-content-around  mb-3' key={tarefa.id}>
                   <label> {tarefa.tarefa } </label>
-                  <div className="d-flex justify-content-around">
-                    <input className='form-control w-100' type="text" placeholder='Editar' value={inputTarefa[tarefa.id] || ""} onChange={(e) => alterEditInput(e, tarefa.id)}/> 
+                  <div className="d-flex flex-column justify-content-around">
+                    <input className='form-control' type="text" placeholder='Editar' value={inputTarefa[tarefa.id] || ""} onChange={(e) => alterEditInput(e, tarefa.id)}/> 
                     <button className='btn btn-warning' onClick={(e)=>submitEditar(e, tarefa.id)}>Editar</button>
                     </div>
                   <button className='btn btn-danger' onClick={(e) => submitDelet(e,tarefa.id)}>Excluir</button>
